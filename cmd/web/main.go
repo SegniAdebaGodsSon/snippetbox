@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"text/template"
 
 	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models/mysql"
 	"github.com/fatih/color"
@@ -13,14 +14,15 @@ import (
 )
 
 type application struct {
-	errorLog *log.Logger
-	infoLog  *log.Logger
-	snippets *mysql.SnippetModel
+	errorLog      *log.Logger
+	infoLog       *log.Logger
+	snippets      *mysql.SnippetModel
+	templateCache map[string]*template.Template
 }
 
 func main() {
-	addr := flag.String("addr", ":4000", "HTTP network address")
 	dsn := flag.String("dsn", "web:sgngodsson@/snippetbox?parseTime=true", "MySQL data source name")
+	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
 	infoLog := log.New(os.Stdout, color.BlueString("INFO\t"), log.Ldate|log.Ltime)
@@ -33,10 +35,16 @@ func main() {
 
 	defer db.Close()
 
+	templateCache, err := newTemplateCache("./ui/html")
+	if err != nil {
+		errorLog.Fatal(err)
+	}
+
 	app := &application{
-		errorLog: errorLog,
-		infoLog:  infoLog,
-		snippets: &mysql.SnippetModel{DB: db},
+		errorLog:      errorLog,
+		infoLog:       infoLog,
+		snippets:      &mysql.SnippetModel{DB: db},
+		templateCache: templateCache,
 	}
 
 	srv := &http.Server{
