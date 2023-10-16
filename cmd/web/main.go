@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models/mysql"
 	"github.com/fatih/color"
