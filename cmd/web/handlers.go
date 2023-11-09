@@ -3,10 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/SegniAdebaGodsSon/snippetbox/pkg/forms"
-	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models"
 	"net/http"
 	"strconv"
+
+	"github.com/SegniAdebaGodsSon/snippetbox/pkg/forms"
+	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {

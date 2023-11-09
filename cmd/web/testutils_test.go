@@ -19,7 +19,7 @@ func newTestApplication(t *testing.T) *application {
 		t.Fatal(err)
 	}
 
-	session := sessions.New([]byte("3dSm5MnygFHh7XidAtbskXrjbwfoJcbJ"))
+	session := sessions.New([]byte("s6Ndh+pPbnzHbS*+9Pk8qGWhTzbpa@ge"))
 	session.Lifetime = 12 * time.Hour
 	session.Secure = true
 
