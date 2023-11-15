@@ -107,8 +107,6 @@ func TestSignupUser(t *testing.T) {
 
 }
 
-// 358
-
 func TestCreateSnippetForm(t *testing.T) {
 	app := newTestApplication(t)
 	ts := newTestServer(t, app.routes())
