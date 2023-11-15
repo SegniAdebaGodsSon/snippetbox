@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+
 	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models"
 	"github.com/justinas/nosurf"
-	"net/http"
 )
 
 func secureHeaders(next http.Handler) http.Handler {
