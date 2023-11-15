@@ -53,7 +53,7 @@ func TestSecureHeaders(t *testing.T) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			t.Fatal("unable to close body: ", err)
 		}
 	}(rs.Body)
 

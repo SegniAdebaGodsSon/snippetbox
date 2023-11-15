@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"database/sql"
-	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func newTestDB(t *testing.T) (*sql.DB, func()) {
 		t.Fatal(err)
 	}
 
-	script, err := ioutil.ReadFile("./testdata/setup.sql")
+	script, err := os.ReadFile("./testdata/setup.sql")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -23,7 +23,7 @@ func newTestDB(t *testing.T) (*sql.DB, func()) {
 	}
 
 	return db, func() {
-		script, err := ioutil.ReadFile("./testdata/teardown.sql")
+		script, err := os.ReadFile("./testdata/teardown.sql")
 		if err != nil {
 			t.Fatal(err)
 		}
