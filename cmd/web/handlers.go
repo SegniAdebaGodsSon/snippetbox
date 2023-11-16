@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/SegniAdebaGodsSon/snippetbox/pkg/forms"
 	"github.com/SegniAdebaGodsSon/snippetbox/pkg/models"
@@ -169,6 +170,53 @@ func (app *application) userProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	app.render(w, r, "profile.page.tmpl", &templateData{User: user})
+}
+
+func (app *application) changePasswordForm(w http.ResponseWriter, r *http.Request) {
+	app.render(w, r, "password.page.tmpl", &templateData{Form: forms.New(nil)})
+}
+
+func (app *application) changePassword(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+	form.Required("currentPassword", "newPassword", "newPasswordConfirmation")
+	form.MinLength("newPassword", 10)
+
+	newPassword := strings.TrimSpace(form.Get("newPassword"))
+	newPasswordConfirmation := strings.TrimSpace(form.Get("newPasswordConfirmation"))
+
+	if newPassword != newPasswordConfirmation {
+		form.Errors.Add("newPasswordConfirmation", "Passwords do not match")
+	}
+
+	if !form.Valid() {
+		app.render(w, r, "password.page.tmpl", &templateData{Form: form})
+		return
+	}
+
+	userId := app.session.GetInt(r, "authenticatedUserID")
+	currentPassword := form.Get("currentPassword")
+	err = app.users.ChangePassword(userId, currentPassword, newPassword)
+
+	if err != nil {
+		if errors.Is(err, models.ErrInvalidCredentials) {
+			form.Errors.Add("currentPassword", "Current password is incorrect")
+			app.render(w, r, "password.page.tmpl", &templateData{
+				Form: form,
+			})
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	app.session.Put(r, "flash", "Your password has been updated!")
+	http.Redirect(w, r, "/user/profile", http.StatusSeeOther)
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
