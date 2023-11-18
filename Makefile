@@ -66,6 +66,10 @@ build:
 run: build
 	/tmp/bin/${BINARY_NAME}
 
+.PHONY: run/debug
+run/debug: build 
+	/tmp/bin/${BINARY_NAME} -debug
+
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live
 run/live:
